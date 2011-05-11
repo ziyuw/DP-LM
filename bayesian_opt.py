@@ -21,8 +21,8 @@ def objective(x, pf, i):
 P = 10
 tau = 50.0
 tau2 = 0.001
-tau3 = 0.000000001
-tau4 = 500.0
+tau3 = 0.000001
+tau4 = 100.0
 
 alpha0 = 50.0
 d = 1
@@ -36,7 +36,7 @@ y = 10*numpy.cos(pts*4)
 sample_pts = []
 sample_value = []
 
-for i in range(20):
+for i in range(10):
     values = [objective(pt, pf, i) for pt in pts]
     pt_index = values.index(max(values))
     print pts[pt_index], y[pt_index]
@@ -45,7 +45,7 @@ for i in range(20):
     pf.sample_new_point(pts[pt_index])
     pf.resample(pts[pt_index], y[pt_index]) # Resample
 
-test_range = arange(-3.0, 4.2, 0.3)
+test_range = arange(-3.0, 4.2, 0.1)
 
 predictions = []
 upper = []

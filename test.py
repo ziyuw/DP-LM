@@ -12,15 +12,22 @@ from predictive_dist import *
 from utility import *
 from particle_filter import *
 
+d = 1
+
 # the number of particles
 P = 20
 tau = 50.0
 tau2 = 0.1
-tau3 = 0.0000000000001
+#tau3 = 0.0000000000001
 tau4 = 500.0
 
+vu = d + 2
+m_0 = mat(zeros((d, 1))) # mean for the prior of mean (a colume vector)
+k = 2 # how to tune this parameter?
+delta_0 = mat(eye((d))) 
+
 alpha0 = 100.0
-d = 1
+
 
 pf = ParticleFilter(P, tau, tau2, tau3, tau4, alpha0, d)
 

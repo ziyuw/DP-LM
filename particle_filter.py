@@ -47,7 +47,7 @@ class ParticleFilter:
 	    if particle.z_n_plus_1_prob == 0.0:
 		prob_vec = array([1 for p in prob_vec])
 		p = prob_vec/sum(prob_vec)
-		
+	    
 	    particle.x_n_plus_1 = nonzero(multinomial(1, p) == 1)[0][0]
     
     def predict_new_point_value(self, z_n_plus_1):
@@ -68,8 +68,12 @@ class ParticleFilter:
 	    #print prob_vec, z_n_plus_1
 	    
 	    mean_mu = 0
+	    
+	    
 	    for x_n_plus_1 in range(size(prob_vec)):
 		(mu, sigma) = predictive_dist_y(x_n_plus_1, z_n_plus_1, particle.particle_dict, self.tau, self.tau2, self.d)
+		#if abs(z_n_plus_1) <= 0.0001:
+			#print mu, sigma, "Look here"
 		mean_mu = mean_mu + particle.w*prob_vec[x_n_plus_1]*float(mu)
 		total_var = total_var + particle.w*prob_vec[x_n_plus_1]*float(sigma)
 		#print float(sigma), particle.w, prob_vec[x_n_plus_1]
@@ -195,6 +199,8 @@ class Particle:
 	# Update w
 	(mu, sigma) = predictive_dist_y(self.x_n_plus_1, z_n_plus_1, self.particle_dict, tau, tau2, d)
 	alpha_n = normpdf(y_n_plus_1, mu, sigma)*self.z_n_plus_1_prob
+	
+	#print mu, sigma, normpdf(y_n_plus_1, mu, sigma), self.z_n_plus_1_prob
 	
 	#print alpha_n	
 	self.w = self.w*alpha_n
