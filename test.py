@@ -17,13 +17,13 @@ d = 1
 # the number of particles
 P = 20
 tau = 500.0
-tau2 = 0.00001
+tau2 = 0.0000001
 tau4 = 1.0
 
-vu = float(d) + 10.0
+vu = float(d) + 1.0
 k = 1.0 # how to tune this parameter?
 
-alpha0 = 100.0
+alpha0 = 10.0
 
 pf = ParticleFilter(P, tau, tau2, tau4, vu, k, alpha0, d)
 

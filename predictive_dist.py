@@ -56,7 +56,7 @@ def predictive_dist_x(x, particle_dict, z_n_plus_1, k, vu, tau4, alpha0, d):
 	    upper = math.exp(scipy.special.multigammaln([vu_n], d))
 	    lower = math.exp(scipy.special.multigammaln([vu], d))
 	    
-	    print pow(det(delta_n/k_n), vu_n/2), pow(det(delta_0/vu), vu/2)
+	    #print pow(det(delta_n/k_n), vu_n/2), pow(det(delta_0/vu), vu/2)
 	    
 	    predictive_density = pow( divide(1.0, pi)*divide(k, k_n), float(d)/2) * divide(upper, lower) * divide(pow(det(delta_0/vu), vu/2), pow(det(delta_n/k_n), vu_n/2))
 	    
