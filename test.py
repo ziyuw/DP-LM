@@ -16,20 +16,16 @@ d = 1
 
 # the number of particles
 P = 20
-tau = 50.0
-tau2 = 0.1
-#tau3 = 0.0000000000001
-tau4 = 500.0
+tau = 500.0
+tau2 = 0.00001
+tau4 = 1.0
 
-vu = d + 2
-m_0 = mat(zeros((d, 1))) # mean for the prior of mean (a colume vector)
-k = 2 # how to tune this parameter?
-delta_0 = mat(eye((d))) 
+vu = float(d) + 10.0
+k = 1.0 # how to tune this parameter?
 
 alpha0 = 100.0
 
-
-pf = ParticleFilter(P, tau, tau2, tau3, tau4, alpha0, d)
+pf = ParticleFilter(P, tau, tau2, tau4, vu, k, alpha0, d)
 
 seq = arange(-1.0, 3.0, 0.1)
 y_value = 5*seq*seq*seq - 10*seq*seq

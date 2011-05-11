@@ -8,7 +8,7 @@ from utility import *
 
 #function probs = predictive_dist_x(x, z, z_n_plus_1, tau3, tau4, alpha0)
 
-def predictive_dist_x(x, particle_dict, z_n_plus_1, k, vu, mean_0, tau4, alpha0, d):
+def predictive_dist_x(x, particle_dict, z_n_plus_1, k, vu, tau4, alpha0, d):
     # returns an array of probabilites
     # x is row vector of size N that is to say x does not include x_n_plus_1
     # z is the design matrix. Each row of z is a input point.
@@ -45,32 +45,40 @@ def predictive_dist_x(x, particle_dict, z_n_plus_1, k, vu, mean_0, tau4, alpha0,
 	predictive_density = 0
 	
 	if n == 0.0:
-	    k_n = k + 1
-	    vu_n = vu + 1
+	    k_n = k + 1.0
+	    vu_n = vu + 1.0
 	    m_n = z_n_plus_1
+	    
 	    delta_0 = vu*mat(eye((d)))
+
 	    delta_n = delta_0 + z_n_plus_1*z_n_plus_1.H  - divide(m_n*m_n.H, k_n)
 	    
-	    uppper = scipy.special.multigammaln([v_n], d)
-	    lower = scipy.special.multigammaln([v_0], d)
+	    upper = math.exp(scipy.special.multigammaln([vu_n], d))
+	    lower = math.exp(scipy.special.multigammaln([vu], d))
 	    
-	    predictive_density = pow(divide(1, pi)*divide(k, k_n), float(d)/2)*divide(upper, lower)*divide(pow(det(delta_0), float(v_0/2)), pow(det(delta_n), float(v_0/2)))
+	    print pow(det(delta_n/k_n), vu_n/2), pow(det(delta_0/vu), vu/2)
 	    
+	    predictive_density = pow( divide(1.0, pi)*divide(k, k_n), float(d)/2) * divide(upper, lower) * divide(pow(det(delta_0/vu), vu/2), pow(det(delta_n/k_n), vu_n/2))
+	    
+	    #print predictive_density, x_n_plus_1
+
 	else:
 	    k_n = k + n
 	    vu_n = vu + n
-	    m_n = particle_dict[x_n_plus_1][1]
+	    m_n = mat(particle_dict[x_n_plus_1][1])
+	    
 	    delta_n = particle_dict[x_n_plus_1][2] + vu*mat(eye((d))) - divide(m_n*m_n.H, k_n)
 	    
 	    delta = delta_n*(k_n + 1)/(k_n*(vu_n - d - 1))
 	    mean = m_n/k_n
-	    
 	
 	    predictive_density = mvnpdf(z_n_plus_1, mean, delta);
+	    
+	    #print predictive_density, x_n_plus_1
 	    	
 	probs[counter] = CRP(x, x_n_plus_1, alpha0)*predictive_density
 	counter = counter + 1
-    #print probs/sum(probs)
+
     return probs
 
 
@@ -108,10 +116,5 @@ def predictive_dist_y(x_n_plus_1, z_n_plus_1, particle_dict, tau, tau2, d):
 	mu = dot(z_n_plus_1.T, wc) # predictive mean
 	
 	sigma = 1/tau + dot(dot(z_n_plus_1.T, vc), z_n_plus_1) # predictive variance
-	
-	if sigma > 5:
-	    print sigma, 1/tau, vc, 'look here 2'
-
-	#print float(sigma), z_n_plus_1, "LOWER"
 
 	return mu, sigma

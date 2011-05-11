@@ -11,7 +11,7 @@ from utility import *
 
 
 class ParticleFilter:
-    def __init__(self, P, tau, tau2, tau3, tau4, alpha0, d):
+    def __init__(self, P, tau, tau2, tau4, vu, k, alpha0, d):
 	# P is the number of particles
 	# d is dimension of the input points
 	
@@ -19,7 +19,8 @@ class ParticleFilter:
         self.particles = []
         self.tau = tau
         self.tau2 = tau2
-        self.tau3 = tau3
+        self.vu = vu
+        self.k = k
         self.tau4 = tau4
         self.alpha0 = alpha0
         self.d = d
@@ -37,7 +38,7 @@ class ParticleFilter:
 	    
 	    #print particle.x
 	    
-	    prob_vec = predictive_dist_x(particle.x, particle.particle_dict, z_n_plus_1, self.tau3, self.tau4, self.alpha0, self.d)
+	    prob_vec = predictive_dist_x(particle.x, particle.particle_dict, z_n_plus_1, self.k, self.vu, self.tau4, self.alpha0, self.d)
 	    particle.z_n_plus_1_prob = sum(prob_vec)
 	    
 	    p = prob_vec/particle.z_n_plus_1_prob
@@ -56,7 +57,7 @@ class ParticleFilter:
 	total_mu = 0; total_var = 0; Mus = []
 	
 	for particle in self.particles:
-	    prob_vec = predictive_dist_x(particle.x, particle.particle_dict, z_n_plus_1, self.tau3, self.tau4, self.alpha0, self.d)
+	    prob_vec = predictive_dist_x(particle.x, particle.particle_dict, z_n_plus_1, self.k, self.vu, self.tau4, self.alpha0, self.d)
 	    z_n_plus_1_prob = sum(prob_vec)
 	    
 	    if z_n_plus_1_prob == 0.0:
