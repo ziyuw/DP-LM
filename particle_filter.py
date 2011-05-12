@@ -214,6 +214,7 @@ class Particle:
 	    z_sum = z_n_plus_1
 	    zcpzc = dot(mat(z_n_plus_1), mat(z_n_plus_1).T)
 	    zcyc = y_n_plus_1*z_n_plus_1
+
 	    self.particle_dict[self.x_n_plus_1] = [num_customer, z_sum, zcpzc, zcyc]
 	else:
 	    self.particle_dict[self.x_n_plus_1][0] = self.particle_dict[self.x_n_plus_1][0] + 1.0

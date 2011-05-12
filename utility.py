@@ -37,3 +37,10 @@ def normpdf(x, mu, sigma):
 def multitpdf(x, df, mu, sigma, d):
     const = divide(scipy.special.gamma(float(df + d)/2), scipy.special.gamma(float(df)/2))
     return const*power(det(sigma)*power(df*pi, d), -0.5)*power(1 + 1.0/df*(x-mu).H*inv(sigma)*(x-mu), -float(df+d)/2)
+    
+def multigamma(p, a):
+    val = power(pi, float(p*(p-1))/4)
+    for i in range(p):
+	val = val * scipy.special.gamma(a + float(1-i-1)/2)
+    return val
+    

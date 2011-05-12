@@ -20,6 +20,9 @@ def predictive_dist_x(x, particle_dict, z_n_plus_1, k, vu, tau4, alpha0, d):
     
     # MUST MAKE THINGS MATRIX!!!!
     I = mat(eye(d))
+    
+    #print z_n_plus_1, 'z_n_plus_1'
+    
     z_n_plus_1 = mat(z_n_plus_1).reshape(d, 1)
     
     
@@ -59,12 +62,16 @@ def predictive_dist_x(x, particle_dict, z_n_plus_1, k, vu, tau4, alpha0, d):
 	    
 	    delta_n = z_n_plus_1*z_n_plus_1.H + delta_0 - mean*mean.H*n + float(k*n)*mean*mean.H/k_n
 	    
-	    upper = scipy.special.multigammaln([vu_n/2], d)
-	    lower = scipy.special.multigammaln([vu/2], d)
+	    #upper = scipy.special.multigammaln([vu_n/2], d)
+	    #lower = scipy.special.multigammaln([vu/2], d)
+	    
+	    upper = multigamma(d, vu_n/2)
+	    lower = multigamma(d, vu/2)
+	    
 	    #print exp(upper - lower)
 	    #print pow(det(delta_n/k_n), vu_n/2), pow(det(delta_0/vu), vu/2)
 	    
-	    predictive_density = pow( divide(1.0, pi)*divide(k, k_n), float(d)/2 ) * math.exp(upper - lower) * divide(pow(det(delta_0), vu/2), pow(det(delta_n), vu_n/2))
+	    predictive_density = pow( divide(1.0, pi)*divide(k, k_n), float(d)/2 ) * divide(upper, lower) * divide(pow(det(delta_0), vu/2), pow(det(delta_n), vu_n/2))
 
 	    #print predictive_density, x_n_plus_1, z_n_plus_1
 
@@ -98,7 +105,6 @@ def predictive_dist_x(x, particle_dict, z_n_plus_1, k, vu, tau4, alpha0, d):
 	probs[counter] = CRP(x, x_n_plus_1, alpha0)*predictive_density
 	counter = counter + 1
     #print probs/sum(probs)
-    #print x
     return probs
 
 
@@ -121,7 +127,6 @@ def predictive_dist_y(x_n_plus_1, z_n_plus_1, particle_dict, tau, tau2, d):
 	mu = 0;
 	sigma = 1/tau + divide(dot(z_n_plus_1.T, z_n_plus_1), tau2)
 	
-	
 	#print sigma, z_n_plus_1, "UPPER"
 	
 	#if sigma > 5:
@@ -129,12 +134,13 @@ def predictive_dist_y(x_n_plus_1, z_n_plus_1, particle_dict, tau, tau2, d):
 	
 	return mu, sigma
     else:
-	
 	vc = inv(tau2*I + tau*mat(particle_dict[x_n_plus_1][2])) # posterior variance
 	wc = tau*dot(vc, particle_dict[x_n_plus_1][3]) # posterior mean
+	
+	#print particle_dict[x_n_plus_1][3], "here"
+	#print vc
 
 	mu = dot(z_n_plus_1.T, wc) # predictive mean
-	
 	sigma = 1/tau + dot(dot(z_n_plus_1.T, vc), z_n_plus_1) # predictive variance
 
 	return mu, sigma
