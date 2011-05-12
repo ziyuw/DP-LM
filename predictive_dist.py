@@ -3,6 +3,7 @@ from numpy import *
 from numpy.linalg import *
 from math import *
 import scipy.special
+from matplotlib.pyplot import *
 
 from utility import *
 
@@ -34,6 +35,8 @@ def predictive_dist_x(x, particle_dict, z_n_plus_1, k, vu, tau4, alpha0, d):
     # returned probabilites in ROW vector
     probs = zeros((possible_values.shape[0]))
     
+    #print (possible_values.shape[0])
+    
     counter = 0
     for x_n_plus_1 in possible_values:
 	
@@ -45,40 +48,57 @@ def predictive_dist_x(x, particle_dict, z_n_plus_1, k, vu, tau4, alpha0, d):
 	predictive_density = 0
 	
 	if n == 0.0:
+	    n = 1.0
 	    k_n = k + 1.0
 	    vu_n = vu + 1.0
-	    m_n = z_n_plus_1
+	    mean = z_n_plus_1
 	    
-	    delta_0 = vu*mat(eye((d)))
+	    delta_0 = mat(eye((d)))*tau4
 
-	    delta_n = delta_0 + z_n_plus_1*z_n_plus_1.H  - divide(m_n*m_n.H, k_n)
+	    #delta_n = vu*delta_0 + z_n_plus_1*z_n_plus_1.H  - divide(m_n*m_n.H, k_n)
 	    
-	    upper = math.exp(scipy.special.multigammaln([vu_n], d))
-	    lower = math.exp(scipy.special.multigammaln([vu], d))
+	    delta_n = z_n_plus_1*z_n_plus_1.H + delta_0 - mean*mean.H*n + float(k*n)*mean*mean.H/k_n
 	    
+	    upper = scipy.special.multigammaln([vu_n/2], d)
+	    lower = scipy.special.multigammaln([vu/2], d)
+	    #print exp(upper - lower)
 	    #print pow(det(delta_n/k_n), vu_n/2), pow(det(delta_0/vu), vu/2)
 	    
-	    predictive_density = pow( divide(1.0, pi)*divide(k, k_n), float(d)/2) * divide(upper, lower) * divide(pow(det(delta_0/vu), vu/2), pow(det(delta_n/k_n), vu_n/2))
-	    
-	    #print predictive_density, x_n_plus_1
+	    predictive_density = pow( divide(1.0, pi)*divide(k, k_n), float(d)/2 ) * math.exp(upper - lower) * divide(pow(det(delta_0), vu/2), pow(det(delta_n), vu_n/2))
+
+	    #print predictive_density, x_n_plus_1, z_n_plus_1
 
 	else:
 	    k_n = k + n
+	    
 	    vu_n = vu + n
-	    m_n = mat(particle_dict[x_n_plus_1][1])
 	    
-	    delta_n = particle_dict[x_n_plus_1][2] + vu*mat(eye((d))) - divide(m_n*m_n.H, k_n)
+	    mean = divide(mat(particle_dict[x_n_plus_1][1]), n)
 	    
-	    delta = delta_n*(k_n + 1)/(k_n*(vu_n - d - 1))
-	    mean = m_n/k_n
-	
-	    predictive_density = mvnpdf(z_n_plus_1, mean, delta);
+	    delta_0 = mat(eye((d)))*tau4
+	    delta_n = delta_0 + particle_dict[x_n_plus_1][2] + (float(k*n)/k_n-n)*mean*mean.H
+	    delta = delta_n*(k_n + 1)/(k_n*(vu_n - d + 1))
 	    
-	    #print predictive_density, x_n_plus_1
-	    	
+	    predictive_density = multitpdf(z_n_plus_1, vu_n - d + 1, mean*n/k_n, delta, d)
+	    
+	    
+	    #print delta, delta_n, particle_dict[x_n_plus_1][2], mean*mean.H*n, float(k*n)*mean*mean.H/k_n
+	    #print x
+	    #print delta_0
+	    #if n > 10:
+		#print delta, particle_dict[x_n_plus_1][2], mean*mean.H*n, float(k*n)*mean*mean.H/k_n
+		#print x, "here"
+		#print x_n_plus_1
+		#myrange = arange(-1.0, 7.0, 0.2)
+		#ys = [float(multitpdf(myx, vu_n - d + 1, mean, delta, d)) for myx in myrange]
+		#figure1 = plot(myrange, ys)
+		#show()
+
+	#print CRP(x, x_n_plus_1, alpha0), x_n_plus_1
 	probs[counter] = CRP(x, x_n_plus_1, alpha0)*predictive_density
 	counter = counter + 1
-
+    #print probs/sum(probs)
+    #print x
     return probs
 
 

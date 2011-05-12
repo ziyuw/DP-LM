@@ -2,6 +2,8 @@
 from numpy import *
 from numpy.linalg import *
 from math import *
+import scipy.special
+from numpy.linalg import *
 
 
 def mvnpdf(x, mu, sigma):
@@ -31,3 +33,7 @@ def normpdf(x, mu, sigma):
     # sigma is a positive number
     # x is a number
     return exp(-pow((x-mu),2)/(2*sigma))/sqrt(2*pi*sigma)
+    
+def multitpdf(x, df, mu, sigma, d):
+    const = divide(scipy.special.gamma(float(df + d)/2), scipy.special.gamma(float(df)/2))
+    return const*power(det(sigma)*power(df*pi, d), -0.5)*power(1 + 1.0/df*(x-mu).H*inv(sigma)*(x-mu), -float(df+d)/2)

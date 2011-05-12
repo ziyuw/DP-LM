@@ -15,30 +15,30 @@ from particle_filter import *
 d = 1
 
 # the number of particles
-P = 20
+P = 10
 tau = 500.0
-tau2 = 0.0000001
-tau4 = 1.0
+tau2 = 0.0001
+tau4 = 0.01
 
-vu = float(d) + 1.0
-k = 1.0 # how to tune this parameter?
+vu = float(d) + 2.0
+k = 0.0001 # how to tune this parameter?
 
 alpha0 = 10.0
 
 pf = ParticleFilter(P, tau, tau2, tau4, vu, k, alpha0, d)
 
-seq = arange(-1.0, 3.0, 0.1)
-y_value = 5*seq*seq*seq - 10*seq*seq
-#y_value = 10*numpy.cos(seq*4)
+seq = arange(2.0, 7.0, 0.2)
+#y_value = -(0.5*seq*seq*seq - 0.1*seq*seq)
+y_value = 10*numpy.cos(seq*4)
 
 pts = (seq.tolist())
-shuffle(pts)
+#shuffle(pts)
 pts = array(pts)
 
 print pts
 
-y = 5*pts*pts*pts - 10*pts*pts
-#y = 10*numpy.cos(pts*4)
+#y = -(0.5*pts*pts*pts - 0.10*pts*pts)
+y = 10*numpy.cos(pts*4)
 
 for i in range(size(pts)):
     # Sample new points
@@ -49,7 +49,7 @@ for i in range(size(pts)):
 print "Training finished."
 
 # Testing
-test_range = arange(-0.5, 4.0, 0.1)
+test_range = arange(2.0, 6.0, 0.1)
 predictions = []
 upper = []
 lower = []

@@ -17,19 +17,22 @@ def objective(x, pf, i):
     #print sigma
     return sigma + mu
 
-# the number of particles
-P = 10
-tau = 50.0
-tau2 = 0.001
-tau3 = 0.000001
-tau4 = 100.0
-
-alpha0 = 50.0
 d = 1
 
-pf = ParticleFilter(P, tau, tau2, tau3, tau4, alpha0, d)
+# the number of particles
+P = 10
+tau = 500.0
+tau2 = 0.01
+tau4 = 0.05
 
-pts = arange(-3.0, 4.0, 0.1)
+vu = float(d) + 2.0
+k = 0.00001 # how to tune this parameter?
+
+alpha0 = 10.0
+
+pf = ParticleFilter(P, tau, tau2, tau4, vu, k, alpha0, d)
+
+pts = arange(2.0, 8.0, 0.1)
 y = 10*numpy.cos(pts*4)
 #y = 5*pts*pts*pts - 10*pts*pts
 
@@ -45,7 +48,7 @@ for i in range(10):
     pf.sample_new_point(pts[pt_index])
     pf.resample(pts[pt_index], y[pt_index]) # Resample
 
-test_range = arange(-3.0, 4.2, 0.1)
+test_range = arange(2.0, 8.2, 0.1)
 
 predictions = []
 upper = []
