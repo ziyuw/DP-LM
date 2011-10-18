@@ -18,9 +18,9 @@ def objective(x, pf, i):
     return sigma + mu
 
 def add_one(x, d):
-    return mat(concatenate(([1], [x]))).reshape(d, 1)
+    return mat(concatenate(([1, sqrt(10.0**2-x**2)], [x]))).reshape(d, 1)
 
-d = 1+1
+d = 1+2
 
 # the number of particles
 P = 10
@@ -31,18 +31,18 @@ tau4 = 0.01
 vu = float(d) + 2.0
 k = 10e-6 # how to tune this parameter?
 
-alpha0 = 20.0
+alpha0 = 50.0
 
 pf = ParticleFilter(P, tau, tau2, tau4, vu, k, alpha0, d)
 
 pts = arange(2.0, 7.0, 0.1)
-y = 10*numpy.cos(pts*4)
+y = 10*numpy.cos(pts*4)*pts
 #y = 5*pts*pts*pts - 10*pts*pts
 
 sample_pts = []
 sample_value = []
 
-for i in range(15):
+for i in range(20):
     values = [objective(add_one(pt, d), pf, i) for pt in pts]
     pt_index = values.index(max(values))
     print pts[pt_index], y[pt_index]
