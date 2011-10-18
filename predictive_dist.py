@@ -116,6 +116,9 @@ def predictive_dist_y(x_n_plus_1, z_n_plus_1, particle_dict, tau, tau2, d):
     
     # This method returns the mean and variance of the predictive distribution of y
     
+    # NOTE: Add gamma prior
+    # NOTE: Non-informative prior
+    
     I = mat(eye(d)) # identity matrix
     
     if x_n_plus_1 in particle_dict:

@@ -27,7 +27,7 @@ alpha0 = 10.0
 
 pf = ParticleFilter(P, tau, tau2, tau4, vu, k, alpha0, d)
 
-seq = arange(2.0, 7.0, 0.2)
+seq = arange(2.0, 7.0, 0.1)
 #y_value = -(0.5*seq*seq*seq - 0.1*seq*seq)
 y_value = 10*numpy.cos(seq*4)
 

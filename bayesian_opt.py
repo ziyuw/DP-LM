@@ -24,25 +24,25 @@ d = 1+1
 
 # the number of particles
 P = 10
-tau = 500.0
-tau2 = 0.001
-tau4 = 0.02
+tau = 100.0
+tau2 = 10e-6
+tau4 = 0.01
 
 vu = float(d) + 2.0
-k = 0.000000001 # how to tune this parameter?
+k = 10e-6 # how to tune this parameter?
 
-alpha0 = 10.0
+alpha0 = 20.0
 
 pf = ParticleFilter(P, tau, tau2, tau4, vu, k, alpha0, d)
 
-pts = arange(-1.0, 8.0, 0.1)
-y = 10*numpy.cos(pts*0.5)
+pts = arange(2.0, 7.0, 0.1)
+y = 10*numpy.cos(pts*4)
 #y = 5*pts*pts*pts - 10*pts*pts
 
 sample_pts = []
 sample_value = []
 
-for i in range(10):
+for i in range(15):
     values = [objective(add_one(pt, d), pf, i) for pt in pts]
     pt_index = values.index(max(values))
     print pts[pt_index], y[pt_index]
